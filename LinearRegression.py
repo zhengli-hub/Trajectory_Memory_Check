@@ -75,7 +75,6 @@ class linearCFModelRegress:
 
         return allRes
 
-
 if __name__ == '__main__':
 
     fileFolder = 'test1124'
