@@ -18,7 +18,7 @@ class ACCData:
         for sheet in self.cars:
             # 读取数据
             dfTemp = pd.read_excel(
-                'E:/UW-Madison/Research/TrajectoryMemoryCheck/Filed-Experiment-Data-ACC_Data-main/'+self.resFileName+'.xlsx',
+                'E:/UW-Madison/Research/Trajectory_Memory_Check/Filed-Experiment-Data-ACC_Data-main/'+self.resFileName+'.xlsx',
                 sheet_name=sheet, index_col=0)
             dfTemp.columns = ['time (s)', 'longitude (deg)', 'latitude (deg)', 'speed (m/s)']
             # 删去时间指标中无用的字符

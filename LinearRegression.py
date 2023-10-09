@@ -13,7 +13,7 @@ class linearCFModelRegress:
     def __init__(self, CF_Data):
         self.CF_Data = CF_Data
         self.memory = None  # 后延的阶数：1, 2, 3, 4, ...
-        self.maxMemory = 30
+        self.maxMemory = 80
 
     def reorganizeData(self, oneTra):
         xData = []  # 自变量数据
@@ -77,8 +77,8 @@ class linearCFModelRegress:
 
 if __name__ == '__main__':
 
-    fileFolder = 'test1124'
-    fileName = 'test10'
+    fileFolder = 'test1118'
+    fileName = 'test5'
     m_ACCData = ACCData(resFileName=fileFolder + '/' + fileName)
     m_ACCData.allPeriod()
     m_ACCData.CFData()
@@ -86,4 +86,4 @@ if __name__ == '__main__':
     m_linearCFModelRegress = linearCFModelRegress(CFData)
     allRes = m_linearCFModelRegress.enmurateAllTra()
     allResDF = pd.DataFrame(allRes)
-    allResDF.to_excel('Results_LinearRegression/' + fileFolder + '+' + fileName + '.xlsx')
+    allResDF.to_excel('Results_LinearRegression/' + fileFolder + '+' + fileName + 'Memory80.xlsx')
