@@ -33,7 +33,7 @@ class HistoricData:
                     dfTemp['time new (s)'].iloc[index] = timeNew
                     dfTemp['speed (m/s)'].iloc[index] = dfTemp['speed (km/h)'].iloc[index] / 3.6
                 # 数据保留1秒
-                dfTemp = dfTemp[dfTemp['time new (s)'] % 1 == 0]
+                dfTemp = dfTemp[dfTemp['time new (s)'] % self.delta_t == 0]
                 # 检查数据是否齐全，不全的时间找出来
                 # 找出所有的空缺数据
                 missTime = []

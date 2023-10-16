@@ -49,7 +49,6 @@ class linearCFModelRegress:
         for memory_count in range(0, self.maxMemory + 1):
             # 遍历每一个阶数
             self.memory = memory_count
-            print(self.memory)
             # 准备数据
             xData, yData = self.reorganizeData(oneTra)
             debug = 1
@@ -81,7 +80,6 @@ class linearCFModelRegress:
     def enmurateAllTra(self):
         allRes = []
         for count in self.CF_Data.keys():
-            print(count)
             # 提取一条跟驰轨迹
             oneTra = self.CF_Data[count]
             # 评估记忆阶数
@@ -103,27 +101,22 @@ if __name__ == '__main__':
     # allResDF = pd.DataFrame(allRes)
     # allResDF.to_excel('Results_LinearRegression/' + fileFolder + '+' + fileName + 'Memory80.xlsx')
 
-    # # Vanderbilt Data
-    # m_VanderbiltData = VanderbiltData()
-    # m_VanderbiltData.CFDataProcess()
-    # CFDataAll = m_VanderbiltData.CFData
-    # scenarioList = CFDataAll.keys()
-    # for scenario in scenarioList:
-    #     CFData = CFDataAll[scenario]
-    #     m_linearCFModelRegress = linearCFModelRegress(CFData)
-    #     allRes = m_linearCFModelRegress.enmurateAllTra()
-    #     allResDF = pd.DataFrame(allRes)
-    #     allResDF.to_excel('Results_LinearRegression/VanderbiltData/' + scenario + '+' + 'Memory80.xlsx')
-
-    # HistoricData Data
-    m_HistoricData = HistoricData()
-    m_HistoricData.allPeriod()
-    m_HistoricData.CFDataProcess()
-    CFDataAll = m_HistoricData.CFData
+    # Vanderbilt Data
+    m_VanderbiltData = VanderbiltData()
+    m_VanderbiltData.CFDataProcess()
+    CFDataAll = m_VanderbiltData.CFData
     scenarioList = CFDataAll.keys()
     for scenario in scenarioList:
         CFData = CFDataAll[scenario]
         m_linearCFModelRegress = linearCFModelRegress(CFData)
         allRes = m_linearCFModelRegress.enmurateAllTra()
         allResDF = pd.DataFrame(allRes)
-        allResDF.to_excel('Results_LinearRegression/HistoricData/' + scenario + '+' + 'Memory80.xlsx')
+        allResDF.to_excel('Results_LinearRegression/VanderbiltData/' + scenario + '+' + 'Memory80.xlsx')
+
+    #
+    #
+    # CFData = m_ACCData.CFDataList
+    # m_linearCFModelRegress = linearCFModelRegress(CFData)
+    # allRes = m_linearCFModelRegress.enmurateAllTra()
+    # allResDF = pd.DataFrame(allRes)
+    # allResDF.to_excel('Results_LinearRegression/' + fileFolder + '+' + fileName + 'Memory80.xlsx')
