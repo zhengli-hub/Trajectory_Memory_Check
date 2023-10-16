@@ -117,8 +117,11 @@ if __name__ == '__main__':
 
     # HistoricData Data
     m_HistoricData = HistoricData()
+    print('done1')
     m_HistoricData.allPeriod()
+    print('done2')
     m_HistoricData.CFDataProcess()
+    print('done3')
     CFDataAll = m_HistoricData.CFData
     scenarioList = CFDataAll.keys()
     for scenario in scenarioList:

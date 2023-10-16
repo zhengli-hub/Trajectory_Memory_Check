@@ -7,9 +7,11 @@ class HistoricData:
 
     def __init__(self):
         self.cars = ['veh'+str(i) for i in range(1, 13)]
-        # self.tests = ['test'+str(i) for i in range(1, 22)]
-        self.tests = ['test1']
-        self.stationaryTests = ['test'+str(i) for i in [1, 12, 14, 15, 16, 17, 18]]
+        self.testList = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21]  # 没有7， 13， 14
+        self.tests = ['test'+str(i) for i in self.testList]
+        print(self.tests)
+        # self.tests = ['test1']
+        self.stationaryTests = ['test'+str(i) for i in [1, 12, 15, 16, 17, 18]]
         self.oscillationTests = ['test'+str(i) for i in [2, 3, 4, 5, 6, 8, 9, 10, 11, 19, 20, 21]]
         self.delta_t = 1
 
@@ -18,6 +20,7 @@ class HistoricData:
 
     def allPeriod(self):  # 原数据
         for testCount in self.tests:
+            print(testCount)
             originDataOneTest = {}
             for carCount in self.cars:
                 dfTemp = pd.read_excel(
@@ -76,6 +79,7 @@ class HistoricData:
 
     def CFDataProcess(self):  # 跟驰数据
         for testCount in self.tests:
+            print(testCount)
             CFDataOneTest = {}
             for carCount in range(1, len(self.cars)):
 
