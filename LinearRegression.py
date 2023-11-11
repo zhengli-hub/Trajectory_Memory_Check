@@ -103,6 +103,19 @@ if __name__ == '__main__':
     # allResDF = pd.DataFrame(allRes)
     # allResDF.to_excel('Results_LinearRegression/' + fileFolder + '+' + fileName + 'Memory80.xlsx')
 
+    # Cats ACC Data
+    m_ACCData = ACCData()
+    m_ACCData.allPeriod()
+    m_ACCData.CFDataProcess()
+    CFDataAll = m_ACCData.CFData
+    scenarioList = CFDataAll.keys()
+    for scenario in scenarioList:
+        CFData = CFDataAll[scenario]
+        m_linearCFModelRegress = linearCFModelRegress(CFData)
+        allRes = m_linearCFModelRegress.enmurateAllTra()
+        allResDF = pd.DataFrame(allRes)
+        allResDF.to_excel('Results_LinearRegression/CatsACCData/' + scenario + '+' + 'Memory80------.xlsx')
+
     # # Vanderbilt Data
     # m_VanderbiltData = VanderbiltData()
     # m_VanderbiltData.CFDataProcess()
