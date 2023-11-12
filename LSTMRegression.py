@@ -46,7 +46,7 @@ class LSTMCFModelRegress:
 
         return xData, yData
 
-    def lstmRegression(self, xData, yData):
+    def lstmRegressionWithSplit(self, xData, yData):
         r2List = []
         for randomState in self.rangeStateList:
             # 划分训练集和和测试集合
@@ -77,8 +77,31 @@ class LSTMCFModelRegress:
 
         return statistics.mean(r2List)
 
+    def lstmRegressionWithoutSplit(self, xData, yData):
+        # 模型对象
+        model = keras.Sequential()
+        # LSTM层
+        model.add(LSTM(units=32, input_shape=(self.maxMemory, self.numVar), activation='relu', return_sequences=True))
+        model.add(LSTM(units=32, activation='relu'))
+        # 输出层
+        model.add(Dense(units=1))
+        # 定义call back，模型精度没有时提前终止训练
+        callbacks_set = [EarlyStopping(monitor='loss', min_delta=0.0001, patience=60, mode='min', verbose=0)]
+        # 编译模型
+        model.compile(optimizer='adam', loss='mse')
+        # 训练模型
+        model.fit(xData, yData, epochs=1000, batch_size=8, callbacks=callbacks_set, verbose=0)
+        # 模型评价
+        yPredict = model.predict(xData)
+        r2 = r2_score(yData, yPredict)
+        # final_loss, final_accuracy = model.evaluate(xData, yData)
+
+        return r2
+
     def findOrder(self, oneTra):
-        accuracy_list = []
+        r2_list = []
+        # final_loss_list = []
+        # final_accuracy_list = []
         for memory_count in range(0, self.maxMemory + 1):
             # 遍历每一个阶数
             self.memory = memory_count
@@ -87,10 +110,12 @@ class LSTMCFModelRegress:
             xData, yData = self.reorganizeData(oneTra)
             debug = 1
             # 拟合线性回归模型
-            accuracy = self.lstmRegression(xData, yData)
-            accuracy_list.append(accuracy)
+            r2 = self.lstmRegressionWithoutSplit(xData, yData)
+            r2_list.append(r2)
+            # final_loss_list.app        end(final_loss)
+        # final_accuracy_list.append(final_accuracy)
 
-        return accuracy_list
+        return r2_list
 
     def enmurateAllTra(self):
         allRes = []
@@ -116,7 +141,7 @@ if __name__ == '__main__':
         m_lstmCFModelRegress = LSTMCFModelRegress(CFData)
         allRes = m_lstmCFModelRegress.enmurateAllTra()
         allResDF = pd.DataFrame(allRes)
-        allResDF.to_excel('Results_LSTMRegression/CatsACCData/' + scenario + '+' + 'Memory80.xlsx')
+        allResDF.to_excel('Results_LSTMRegression/CatsACCData/' + scenario + '+' + 'Memory20.xlsx')
 
     # # Vanderbilt Data
     # m_VanderbiltData = VanderbiltData()

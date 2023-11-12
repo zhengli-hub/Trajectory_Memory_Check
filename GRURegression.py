@@ -1,9 +1,10 @@
 
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import SimpleRNN, Dense
+from tensorflow.keras.layers import GRU, Dense
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
@@ -13,7 +14,7 @@ from ACCDataProcess import ACCData
 from HistoricDataProcess import HistoricData
 from VanderbiltDataProcess import VanderbiltData
 
-class RNNCFModelRegress:
+class GRUCFModelRegress:
 
     # CF_Data: all tra info
     # oneTra: one tra info
@@ -46,7 +47,7 @@ class RNNCFModelRegress:
 
         return xData, yData
 
-    def rnnRegressionWithSplit(self, xData, yData):
+    def gruRegressionWithSplit(self, xData, yData):
         r2List = []
         for randomState in self.rangeStateList:
             # 划分训练集和和测试集合
@@ -59,9 +60,9 @@ class RNNCFModelRegress:
 
             # 模型对象
             model = Sequential()
-            # RNN层
-            model.add(SimpleRNN(units=32, input_shape=(self.maxMemory, self.numVar), activation='relu', return_sequences=True))
-            model.add(SimpleRNN(units=32, activation='relu'))
+            # GRU层
+            model.add(GRU(units=32, input_shape=(self.maxMemory, self.numVar), activation='relu', return_sequences=True))
+            model.add(GRU(units=32, activation='relu'))
             # 输出层
             model.add(Dense(units=1))
             # 定义call back，模型精度没有时提前终止训练
@@ -77,12 +78,12 @@ class RNNCFModelRegress:
 
         return statistics.mean(r2List)
 
-    def rnnRegressionWithoutSplit(self, xData, yData):
+    def gruRegressionWithoutSplit(self, xData, yData):
         # 模型对象
         model = Sequential()
         # RNN层
-        model.add(SimpleRNN(units=32, input_shape=(self.maxMemory, self.numVar), activation='relu', return_sequences=True))
-        model.add(SimpleRNN(units=32, activation='relu'))
+        model.add(GRU(units=32, input_shape=(self.maxMemory, self.numVar), activation='relu', return_sequences=True))
+        model.add(GRU(units=32, activation='relu'))
         # 输出层
         model.add(Dense(units=1))
         # 定义call back，模型精度没有时提前终止训练
@@ -108,7 +109,7 @@ class RNNCFModelRegress:
             xData, yData = self.reorganizeData(oneTra)
             debug = 1
             # 拟合线性回归模型
-            accuracy = self.rnnRegressionWithoutSplit(xData, yData)
+            accuracy = self.gruRegressionWithoutSplit(xData, yData)
             accuracy_list.append(accuracy)
 
         return accuracy_list
@@ -134,10 +135,10 @@ if __name__ == '__main__':
     scenarioList = CFDataAll.keys()
     for scenario in scenarioList:
         CFData = CFDataAll[scenario]
-        m_rnnCFModelRegress = RNNCFModelRegress(CFData)
-        allRes = m_rnnCFModelRegress.enmurateAllTra()
+        m_gruCFModelRegress = GRUCFModelRegress(CFData)
+        allRes = m_gruCFModelRegress.enmurateAllTra()
         allResDF = pd.DataFrame(allRes)
-        allResDF.to_excel('Results_RNNRegression/CatsACCData/' + scenario + '+' + 'Memory20.xlsx')
+        allResDF.to_excel('Results_GRURegression/CatsACCData/' + scenario + '+' + 'Memory20.xlsx')
 
     # # Vanderbilt Data
     # m_VanderbiltData = VanderbiltData()
