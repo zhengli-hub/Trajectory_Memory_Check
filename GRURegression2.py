@@ -29,15 +29,11 @@ class GRUCFModelRegress2:
         self.trainEpochs = 100
         self.memoryStart = 0
 
-        self.tests = ['test1118/test1', 'test1118/test2', 'test1118/test3', 'test1118/test4', 'test1118/test5',
-                      'test1124/test1', 'test1124/test2', 'test1124/test3', 'test1124/test6', 'test1124/test7',
-                      'test1124/test8', 'test1124/test9', 'test1124/test10']
-        self.stationaryTests = ['test1118/test1', 'test1118/test2', 'test1124/test1', 'test1124/test2', 'test1124/test3']
-        self.oscillationTests = ['test1118/test3', 'test1118/test4', 'test1118/test5','test1124/test6', 'test1124/test7',
-                                 'test1124/test8', 'test1124/test9', 'test1124/10']
-
-        self.AVName = ['veh 2', 'veh 3']
-        self.HVName = ['veh 4', 'veh 5']
+        self.tests = None
+        self.stationaryTests = None
+        self.oscillationTests = None
+        self.AVName = None
+        self.HVName = None
 
     def addressOneTra(self, oneTra):
         xData = []  # 自变量数据
@@ -140,7 +136,10 @@ class GRUCFModelRegress2:
             allData = self.reorganizeData()
             for vehType in allData.keys():
                 print('-------------vehType: ', vehType)
-                accuracy = self.gruRegression(allData[vehType]['x'], allData[vehType]['y'])
+                if len(allData[vehType]['x']) != 0:
+                    accuracy = self.gruRegression(allData[vehType]['x'], allData[vehType]['y'])
+                else:
+                    accuracy = -9999
                 accuracyDictOneOrder[vehType] = accuracy
             accuracyDict[memory_count] = accuracyDictOneOrder
 
@@ -156,22 +155,44 @@ class GRUCFModelRegress2:
 
 if __name__ == '__main__':
 
-    # Cats ACC Data
-    m_ACCData = ACCData()
-    m_ACCData.allPeriod()
-    m_ACCData.CFDataProcess()
-    CFDataAll = m_ACCData.CFData
+    # # Cats ACC Data
+    # m_ACCData = ACCData()
+    # m_ACCData.allPeriod()
+    # m_ACCData.CFDataProcess()
+    # CFDataAll = m_ACCData.CFData
+    # m_gruCFModelRegress = GRUCFModelRegress2(CFDataAll)
+    # m_gruCFModelRegress.tests = ['test1118/test1', 'test1118/test2', 'test1118/test3', 'test1118/test4', 'test1118/test5',
+    #               'test1124/test1', 'test1124/test2', 'test1124/test3', 'test1124/test6', 'test1124/test7',
+    #               'test1124/test8', 'test1124/test9', 'test1124/test10']
+    # m_gruCFModelRegress.stationaryTests = ['test1118/test1', 'test1118/test2', 'test1124/test1', 'test1124/test2', 'test1124/test3']
+    # m_gruCFModelRegress.oscillationTests = ['test1118/test3', 'test1118/test4', 'test1118/test5', 'test1124/test6', 'test1124/test7',
+    #                          'test1124/test8', 'test1124/test9', 'test1124/10']
+    #
+    # m_gruCFModelRegress.AVName = ['veh 2', 'veh 3']
+    # m_gruCFModelRegress.HVName = ['veh 4', 'veh 5']
+    # accuracyDict = m_gruCFModelRegress.findOrder()
+    # for key in accuracyDict.keys():
+    #     pd.DataFrame(accuracyDict[key], index=[0]).to_excel('Results_GRURegression2/CatsACCData/' + key + '+' + 'Memory20.xlsx')
+
+    # HistoricData Data
+    m_HistoricData = HistoricData()
+    print('done1')
+    m_HistoricData.allPeriod()
+    print('done2')
+    m_HistoricData.CFDataProcess()
+    print('done3')
+    CFDataAll = m_HistoricData.CFData
     m_gruCFModelRegress = GRUCFModelRegress2(CFDataAll)
+    m_gruCFModelRegress.tests = ['test'+str(i) for i in range(1, 7)] + \
+                                ['test'+str(i) for i in range(8, 13)] + \
+                                ['test'+str(i) for i in range(15, 22)]
+    m_gruCFModelRegress.stationaryTests = ['test'+str(i) for i in [1, 12, 14, 15, 16, 17, 18]]
+    m_gruCFModelRegress.oscillationTests = ['test'+str(i) for i in [2, 3, 4, 5, 6, 8, 9, 10, 11, 19, 20, 21]]
+    m_gruCFModelRegress.AVName = ['veh'+str(i) for i in range(2, 13)]
+    m_gruCFModelRegress.HVName = []
     accuracyDict = m_gruCFModelRegress.findOrder()
     for key in accuracyDict.keys():
-        pd.DataFrame(accuracyDict[key], index=[0]).to_excel('Results_GRURegression2/CatsACCData/' + key + '+' + 'Memory20.xlsx')
-
-    # for scenario in scenarioList:
-    #     CFData = CFDataAll[scenario]
-    #     m_gruCFModelRegress = GRUCFModelRegress(CFData)
-    #     allRes = m_gruCFModelRegress.enmurateAllTra()
-    #     allResDF = pd.DataFrame(allRes)
-    #     allResDF.to_excel('Results_GRURegression/CatsACCData/' + scenario + '+' + 'Memory20.xlsx')
+        pd.DataFrame(accuracyDict[key], index=[0]).to_excel('Results_GRURegression2/HistoricData/' + key + '+' + 'Memory20.xlsx')
 
     # # Vanderbilt Data
     # m_VanderbiltData = VanderbiltData()
@@ -184,19 +205,3 @@ if __name__ == '__main__':
     #     allRes = m_linearCFModelRegress.enmurateAllTra()
     #     allResDF = pd.DataFrame(allRes)
     #     allResDF.to_excel('Results_LinearRegression/VanderbiltData/' + scenario + '+' + 'Memory80.xlsx')
-
-    # # HistoricData Data
-    # m_HistoricData = HistoricData()
-    # print('done1')
-    # m_HistoricData.allPeriod()
-    # print('done2')
-    # m_HistoricData.CFDataProcess()
-    # print('done3')
-    # CFDataAll = m_HistoricData.CFData
-    # scenarioList = CFDataAll.keys()
-    # for scenario in scenarioList:
-    #     CFData = CFDataAll[scenario]
-    #     m_linearCFModelRegress = linearCFModelRegress(CFData)
-    #     allRes = m_linearCFModelRegress.enmurateAllTra()
-    #     allResDF = pd.DataFrame(allRes)
-    #     allResDF.to_excel('Results_LinearRegression/HistoricData/' + scenario + '+' + 'Memory80.xlsx')

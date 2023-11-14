@@ -15,3 +15,7 @@ df = pd.DataFrame(data)
 
 # Display the DataFrame
 print(df)
+
+a = ['test'+str(i) for i in range(1, 10)]
+
+print(a)
