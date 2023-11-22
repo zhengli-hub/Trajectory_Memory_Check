@@ -26,7 +26,7 @@ class GRUCFModelRegress2:
         self.numVar = 3  # 决策变量的个数：距离、速度差、速度
         self.numFolds = 5  # 训练集和测试集合数据划分
 
-        self.trainEpochs = 100
+        self.trainEpochs = 50
         self.memoryStart = 0
 
         self.tests = None
